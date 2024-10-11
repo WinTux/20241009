@@ -6,7 +6,7 @@ using PreGrado.Repositories;
 
 namespace PreGrado.Controllers
 {
-    [Route("api/estudiante")] // http://localhost:7654/api/estudiante
+    [Route("api/estudiante1")] // http://localhost:7654/api/estudiante1
     [ApiController]
     public class Estudiante1Controller : ControllerBase
     {
@@ -17,12 +17,12 @@ namespace PreGrado.Controllers
             this.repo = repo;
         }
 
-        [HttpGet] // http://localhost:7654/api/estudiante [GET]
+        [HttpGet] // http://localhost:7654/api/estudiante1 [GET]
         public ActionResult<IEnumerable<Estudiante1>> GetEstudiantes() { 
             var ests = repo.GetEstudiantes();
             return Ok(ests); // 200 
         }
-        [HttpGet("{id}")] // http://localhost:7654/api/estudiante/{id} [GET]
+        [HttpGet("{id}")] // http://localhost:7654/api/estudiante1/{id} [GET]
         public ActionResult<Estudiante1> GetEstudianteById(int id)
         {
             var est = repo.GetEstudianteById(id);
