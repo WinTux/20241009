@@ -9,6 +9,14 @@ namespace PreGrado.Repositories
         {
             _context = context;
         }
+
+        public void AddEstudiante(Estudiante estudiante)
+        {
+            if (estudiante == null)
+                throw new ArgumentNullException(nameof(estudiante));
+            _context.Estudiantes.Add(estudiante);
+        }
+
         public Estudiante GetEstudianteByMatricula(int matricula)
         {
             // linQ -> SQL
@@ -17,7 +25,13 @@ namespace PreGrado.Repositories
 
         public IEnumerable<Estudiante> GetEstudiantes()
         {
-            return _context.Estudiantes.ToList(); // SELECT * FROM Estudiante;
+            return _context.Estudiantes.Where(est => est.Estado == true).ToList();// SELECT * FROM Estudiante WHERE Estado = 1;
+            //return _context.Estudiantes.ToList(); // SELECT * FROM Estudiante;
+        }
+
+        public bool Guardar()
+        {
+            return (_context.SaveChanges()>-1);
         }
     }
 }

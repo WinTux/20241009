@@ -13,8 +13,9 @@ namespace PreGrado
 
             builder.Services.AddControllers();
             builder.Services.AddDbContext<UniversidadDbContext>(op => op.UseSqlServer(builder.Configuration.GetConnectionString("una_conexion")));
-
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddScoped<IEstudiante1Repository, ImplEstudiante1Repository>();
+            builder.Services.AddScoped<IEstudianteRepository, ImplEstudianteRepository>();
 
             var app = builder.Build();
 
