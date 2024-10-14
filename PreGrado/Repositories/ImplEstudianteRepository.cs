@@ -33,5 +33,10 @@ namespace PreGrado.Repositories
         {
             return (_context.SaveChanges()>-1);
         }
+
+        public void UpdateEstudiante(Estudiante estudiante)
+        {
+            // No hacemos nada porque será gestionado en el DbContext
+        }
     }
 }

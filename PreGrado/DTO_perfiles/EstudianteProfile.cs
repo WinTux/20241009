@@ -9,6 +9,7 @@ namespace PreGrado.DTO_perfiles
         {
             CreateMap<Estudiante,EstudianteReadDTO>(); // --->
             CreateMap<EstudianteCreateDTO, Estudiante>(); // --->
+            CreateMap<EstudianteUpdateDTO, Estudiante>(); // --->
         }
     }
 }

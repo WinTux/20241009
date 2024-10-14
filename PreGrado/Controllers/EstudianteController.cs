@@ -23,13 +23,31 @@ namespace PreGrado.Controllers
             var ests = estRepo.GetEstudiantes();
             return Ok(mapper.Map<IEnumerable<EstudianteReadDTO>>(ests));
         }
-        [HttpGet("{matricula}")] // http://localhost:7654/api/estudiante/{matricula} [GET]
+        [HttpGet("{matricula}", Name = "getEstudianteByMatricula")] // http://localhost:7654/api/estudiante/{matricula} [GET]
         public ActionResult<EstudianteReadDTO> getEstudianteByMatricula(int matricula)
         {
             Estudiante est = estRepo.GetEstudianteByMatricula(matricula);
             if(est != null)
                 return Ok(mapper.Map<EstudianteReadDTO>(est));
             return NotFound(); // 404
+        }
+        [HttpPost]
+        public ActionResult<EstudianteReadDTO> setEstudiante(EstudianteCreateDTO estCreateDTO) {
+            Estudiante estudiante = mapper.Map<Estudiante>(estCreateDTO);
+            estudiante.Estado = true;
+            estRepo.AddEstudiante(estudiante);
+            estRepo.Guardar();
+            EstudianteReadDTO estRetorno = mapper.Map<EstudianteReadDTO>(estudiante);
+            return CreatedAtRoute(nameof(getEstudianteByMatricula), new { matricula = estRetorno.Matricula}, estRetorno ); // 201 Created // location: http://localhost:7654/api/estudiante/123
+        }
+        [HttpPut("{matricula}")] // https://localhost:7654/api/estudiante/{matricula} [PUT]
+        public ActionResult updateEstudiante(int matricula, EstudianteUpdateDTO estUpdateDTO) {
+            Estudiante estudiante = estRepo.GetEstudianteByMatricula(matricula);
+            if (estudiante == null)
+                return NotFound(); // 404
+            mapper.Map(estUpdateDTO,estudiante);
+            estRepo.Guardar();
+            return NoContent(); // 204
         }
     }
 }
