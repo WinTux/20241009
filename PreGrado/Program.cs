@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Serialization;
 using PreGrado.Repositories;
 
 namespace PreGrado
@@ -11,7 +12,9 @@ namespace PreGrado
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddNewtonsoftJson(
+                s => s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver()
+            );
             builder.Services.AddDbContext<UniversidadDbContext>(op => op.UseSqlServer(builder.Configuration.GetConnectionString("una_conexion")));
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddScoped<IEstudiante1Repository, ImplEstudiante1Repository>();

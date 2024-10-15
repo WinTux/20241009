@@ -8,6 +8,7 @@ namespace PreGrado.Repositories
         Estudiante GetEstudianteByMatricula(int matricula);
         void AddEstudiante(Estudiante estudiante);
         void UpdateEstudiante(Estudiante estudiante);
+        void DeleteEstudiante(Estudiante estudiante);
         bool Guardar();
     }
 }

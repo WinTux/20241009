@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using PreGrado.DTO;
 using PreGrado.Models;
@@ -46,6 +47,30 @@ namespace PreGrado.Controllers
             if (estudiante == null)
                 return NotFound(); // 404
             mapper.Map(estUpdateDTO,estudiante);
+            estRepo.Guardar();
+            return NoContent(); // 204
+        }
+        [HttpPatch("{matricula}")] // https://localhost:7654/api/estudiante/{matricula} [PUT]
+        public ActionResult updateEstudiantePatch(int matricula, JsonPatchDocument<EstudianteUpdateDTO> estPatch)
+        {
+            Estudiante estudiante = estRepo.GetEstudianteByMatricula(matricula);
+            if (estudiante == null)
+                return NotFound(); // 404
+            EstudianteUpdateDTO estParaPatch = mapper.Map<EstudianteUpdateDTO>(estudiante);
+            estPatch.ApplyTo(estParaPatch, ModelState);
+            if(!TryValidateModel(estParaPatch))
+                return ValidationProblem(ModelState);
+            mapper.Map(estParaPatch, estudiante);
+            estRepo.UpdateEstudiante(estudiante);
+            estRepo.Guardar();
+            return NoContent(); // 204
+        }
+        [HttpDelete("{matricula}")] // https://localhost:7654/api/estudiante/{matricula} [DELETE]
+        public ActionResult deleteEstudiante(int matricula) {
+            Estudiante estudiante = estRepo.GetEstudianteByMatricula(matricula);
+            if (estudiante == null)
+                return NotFound(); // 404
+            estRepo.DeleteEstudiante(estudiante);
             estRepo.Guardar();
             return NoContent(); // 204
         }

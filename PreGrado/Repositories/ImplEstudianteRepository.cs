@@ -17,6 +17,13 @@ namespace PreGrado.Repositories
             _context.Estudiantes.Add(estudiante);
         }
 
+        public void DeleteEstudiante(Estudiante estudiante)
+        {
+            if (estudiante == null)
+                throw new ArgumentNullException(nameof(estudiante));
+            _context.Estudiantes.Remove(estudiante);
+        }
+
         public Estudiante GetEstudianteByMatricula(int matricula)
         {
             // linQ -> SQL
