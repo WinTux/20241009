@@ -1,0 +1,6 @@
+services:
+  campus:
+    image: ${DOCKER_REGISTRY-}campus
+    build:
+      context: Campus
+      dockerfile: Dockerfile
