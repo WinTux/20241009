@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using PreGrado.ComunicacionSync.http;
 using PreGrado.DTO;
 using PreGrado.Models;
 using PreGrado.Repositories;
@@ -13,10 +14,14 @@ namespace PreGrado.Controllers
     {
         private readonly IEstudianteRepository estRepo;
         private readonly IMapper mapper;
-        public EstudianteController(IEstudianteRepository estRepo, IMapper mapper)
+
+        public readonly ICampusHistorialCliente campusHistorialCliente;
+
+        public EstudianteController(IEstudianteRepository estRepo, IMapper mapper, ICampusHistorialCliente campusHistorialCliente)
         {
             this.estRepo = estRepo;
             this.mapper = mapper;
+            this.campusHistorialCliente = campusHistorialCliente;
         }
         [HttpGet] // http://localhost:7654/api/estudiante [GET]
         public ActionResult<IEnumerable<EstudianteReadDTO>> getEstudiantes()
@@ -33,13 +38,24 @@ namespace PreGrado.Controllers
             return NotFound(); // 404
         }
         [HttpPost]
-        public ActionResult<EstudianteReadDTO> setEstudiante(EstudianteCreateDTO estCreateDTO) {
+        public async Task<ActionResult<EstudianteReadDTO>> setEstudiante(EstudianteCreateDTO estCreateDTO) {
             Estudiante estudiante = mapper.Map<Estudiante>(estCreateDTO);
             estudiante.Estado = true;
             estRepo.AddEstudiante(estudiante);
             estRepo.Guardar();
             EstudianteReadDTO estRetorno = mapper.Map<EstudianteReadDTO>(estudiante);
+
+            // Ejemplo de mensaje sincrónico
+            try
+            {
+                await campusHistorialCliente.ComunicarseConCampus(estRetorno);
+            }
+            catch (Exception e){
+                Console.WriteLine($"Ocurrió un error al comunicarse con Campus de forma sincronizada: {e.Message}");
+            }
+
             return CreatedAtRoute(nameof(getEstudianteByMatricula), new { matricula = estRetorno.Matricula}, estRetorno ); // 201 Created // location: http://localhost:7654/api/estudiante/123
+            
         }
         [HttpPut("{matricula}")] // https://localhost:7654/api/estudiante/{matricula} [PUT]
         public ActionResult updateEstudiante(int matricula, EstudianteUpdateDTO estUpdateDTO) {
