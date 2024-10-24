@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sqlserver-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: misqlserver
+  template:
+    metadata:
+      labels:
+        app: misqlserver
+    spec:
+      containers:
+        - name: misqlserver
+          image: mcr.microsoft.com/mssql/server:2022-latest
+          ports:
+            - containerPort: 1433
+          env:
+            - name: MSSQL_PID
+              value: "Express"
+            - name: ACCEPT_EULA
+              value: "Y"
+            - name: SA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: miqueridosqlserver
+                  key: SA_PASSWORD
+          volumeMounts:
+            - mountPath: /var/opt/mssql/data
+              name: miservidorsqlserver
+      volumes:
+        - name: miservidorsqlserver
+          persistentVolumeClaim:
+            claimName: sqlserver-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sqlserver-cluster-ip
+spec:
+  type: ClusterIP
+  selector:
+    app: misqlserver
+  ports:
+    - name: misqlserver
+      protocol: TCP
+      port: 1433
+      targetPort: 1433
