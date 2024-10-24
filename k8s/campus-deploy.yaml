@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: campusservice
-          image: rusok/proyectopregrado:2.0
+          image: rusok/proyectocampus:1.0
           imagePullPolicy: IfNotPresent
 ---
 apiVersion: v1
