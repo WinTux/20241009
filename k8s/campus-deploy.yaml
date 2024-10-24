@@ -1,32 +1,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: universidad-deploy
+  name: campus-deploy
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: universidadservice
+      app: campusservice
   template:
     metadata:
       labels:
-        app: universidadservice
+        app: campusservice
     spec:
       containers:
-        - name: universidadservice
+        - name: campusservice
           image: rusok/proyectopregrado:2.0
           imagePullPolicy: IfNotPresent
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: universidad-cluster-ip
+  name: campus-cluster-ip
 spec:
   type: ClusterIP
   selector:
-    app: universidadservice
+    app: campusservice
   ports:
-    - name: universidadservice
+    - name: campusservice
       protocol: TCP
       port: 8080
       targetPort: 8080
