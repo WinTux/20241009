@@ -14,5 +14,7 @@ namespace Campus.Conexion
         IEnumerable<Perfil> GetPerfiles(int matricula);
         void CrearPerfil(int matrivula, Perfil perfil);
         bool Guardar();
+
+        bool ExisteEstudianteForaneo(int fmatricula);//si existe estudiante foráneo
     }
 }

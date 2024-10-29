@@ -4,6 +4,6 @@ namespace PreGrado.ComunicacionAsync
 {
     public interface IBusDeMensajesCliente
     {
-        void PublicarNuevoEstudiante(EstudianteReadDTO estudianteReadDTO);
+        void PublicarNuevoEstudiante(EstudiantePublisherDTO estudianteReadDTO);
     }
 }

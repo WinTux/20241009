@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using PreGrado.ComunicacionAsync;
 using PreGrado.ComunicacionSync.http;
 using PreGrado.DTO;
 using PreGrado.Models;
 using PreGrado.Repositories;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PreGrado.Controllers
 {
@@ -16,12 +18,14 @@ namespace PreGrado.Controllers
         private readonly IMapper mapper;
 
         public readonly ICampusHistorialCliente campusHistorialCliente;
+        private readonly IBusDeMensajesCliente busDeMensajesCliente;
 
-        public EstudianteController(IEstudianteRepository estRepo, IMapper mapper, ICampusHistorialCliente campusHistorialCliente)
+        public EstudianteController(IEstudianteRepository estRepo, IMapper mapper, ICampusHistorialCliente campusHistorialCliente, IBusDeMensajesCliente busDeMensajesCliente)
         {
             this.estRepo = estRepo;
             this.mapper = mapper;
             this.campusHistorialCliente = campusHistorialCliente;
+            this.busDeMensajesCliente = busDeMensajesCliente;
         }
         [HttpGet] // http://localhost:7654/api/estudiante [GET]
         public ActionResult<IEnumerable<EstudianteReadDTO>> getEstudiantes()
@@ -52,6 +56,14 @@ namespace PreGrado.Controllers
             }
             catch (Exception e){
                 Console.WriteLine($"Ocurrió un error al comunicarse con Campus de forma sincronizada: {e.Message}");
+            }
+            // Ejemplo de mensaje asíncrono
+            try{
+                var estudianteDTO = mapper.Map<EstudiantePublisherDTO>(estRetorno);
+                estudianteDTO.tipoEvento = "estudiante_publicado";
+                busDeMensajesCliente.PublicarNuevoEstudiante(estudianteDTO);
+            }catch(Exception e){
+                Console.WriteLine($"Ocurrió un error al tratar de publicar: { e.Message}");
             }
 
             return CreatedAtRoute(nameof(getEstudianteByMatricula), new { matricula = estRetorno.Matricula}, estRetorno ); // 201 Created // location: http://localhost:7654/api/estudiante/123

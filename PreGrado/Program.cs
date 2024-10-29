@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
+using PreGrado.ComunicacionAsync;
 using PreGrado.ComunicacionSync.http;
 using PreGrado.Repositories;
 
@@ -21,7 +22,7 @@ namespace PreGrado
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddScoped<IEstudiante1Repository, ImplEstudiante1Repository>();
             builder.Services.AddScoped<IEstudianteRepository, ImplEstudianteRepository>();
-
+            builder.Services.AddSingleton<IBusDeMensajesCliente,ImpBusDeMensajesCliente>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
