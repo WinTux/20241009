@@ -29,21 +29,27 @@ namespace Campus.Conexion
         // Para perfiles
         public Perfil GetPerfil(int idPerfil, int matricula)
         {
-            throw new NotImplementedException();
+            return contexto.Perfiles.Where(per=>per.id==idPerfil && per.estudianteMatricula == matricula).FirstOrDefault();
         }
 
         public IEnumerable<Perfil> GetPerfiles(int matricula)
         {
-            throw new NotImplementedException();
+            return contexto.Perfiles.Where(p => p.estudianteMatricula == matricula).OrderBy(p => p.estudiante.Apellido);
         }
-        public void CrearPerfil(int matrivula, Perfil perfil)
+        public void CrearPerfil(int matricula, Perfil perfil)
         {
-            throw new NotImplementedException();
+            if (perfil == null)
+                throw new ArgumentNullException(nameof(perfil));
+            else {
+                perfil.estudianteMatricula = matricula;
+                contexto.Perfiles.Add(perfil);
+            }
+
         }
 
         public bool Guardar()
         {
-            throw new NotImplementedException();
+            return (contexto.SaveChanges() >= 0);
         }
     }
 }
